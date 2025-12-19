@@ -158,3 +158,39 @@ WHERE co.no_farms87 > 500
   AND c.crime_inde <= 0.02
   AND co.pop_sqmile < 150
   AND c.university > 0;
+
+
+## **School Site Selection (PostGIS & QGIS)**
+
+Land parcels were filtered based on land-use classification and minimum area requirements. Parcels
+intersecting existing buildings were excluded using a NOT EXISTS clause to ensure vacant land only.
+Finally, parcels located within 25 meters of the road network were selected to guarantee proper
+accessibility for transportation and emergency services.
+
+```sql
+SELECT
+    l.id,
+    l.type,
+    l.area,
+    l.owner,
+    l.geom,
+    ST_Centroid(l.geom) AS centroid,
+    MIN(ST_Distance(ST_Centroid(l.geom), r.geom)) AS min_road_dist
+FROM "Landuse" l
+JOIN "Roads" r
+    ON ST_DWithin(l.geom, r.geom, 25)
+WHERE LOWER(l.type) IN ('un-used', 'agricultural areas', 'commercial lands')
+  AND COALESCE(l.area, ST_Area(l.geom)) >= 5000
+  AND NOT EXISTS (
+        SELECT 1
+        FROM "Buildings" b
+        WHERE ST_Intersects(b.geom, l.geom)
+      )
+GROUP BY
+    l.id,
+    l.type,
+    l.area,
+    l.owner,
+    l.geom;
+
+
