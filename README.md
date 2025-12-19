@@ -165,22 +165,14 @@ WHERE co.no_farms87 > 500
 
 #### **School Site Selection (PostGIS \+ QGIS)**
 
-**First**, querying the landuse layer for parcels classified as unused, agricultural, or commercial, establishing the
-fundamental land-use requirement subset.
+Parcels were selected by filtering the land-use layer for unused, agricultural, and commercial
+classifications, then excluding any parcels smaller than 5,000 square meters to ensure sufficient
+development space. Parcels intersecting existing buildings were removed using spatial intersection
+checks, leaving only vacant land suitable for construction. Finally, parcels within 25 meters of
+road networks were retained to guarantee accessibility for transportation and emergency services.
+The combined spatial criteria were applied in a single query, and results were visualized in QGIS to
+analyze both compliance and spatial distribution relative to existing infrastructure.
 
-**Second**, the ST\_Area function calculated parcel sizes, excluding any below 5,000 square meters to ensure adequate
-space for school facilities, playgrounds, and parking.
-
-**Third**, the ST\_Intersects function identified parcels overlapping with existing buildings. A NOT EXISTS subquery
-eliminated these parcels, ensuring only vacant land remained for development without demolition needs.
-
-**Finally**, the ST\_DWithin function identified parcels within 25 meters of roads, ensuring reasonable access for
-buses, parents, and emergency vehicles.
-
-The complete query combined all four criteria using nested WHERE clauses and spatial functions. Results were exported to
-QGIS for visualization, with qualifying parcels symbolized distinctly alongside roads and buildings for spatial context.
-This allowed planners to assess both which parcels met criteria and their geographic distribution relative to existing
-infrastructure.
 
 **Code**: `SQL`
 
@@ -200,21 +192,15 @@ GROUP BY l.id, l.type, l.area, l.owner, l.geom;
 
 #### **Tree-Cutting Priority (GeoPandas \+ QGIS)**
 
-Five risk factors were calculated and normalized (0 to 1).
+Five risk factors were computed and normalized to a 0–1 scale. Tree mortality risk was derived by
+converting the mortality raster into polygons and normalizing values by the dataset maximum.
+Community feature risk was calculated using minimum distances from grid centroids, inverted and
+weighted to reflect feature importance. Egress route risk was based on proximity to evacuation
+routes, with distances transformed into weighted risk scores. Population density risk was obtained
+by extracting and normalizing density statistics, assigning higher priority to denser areas.
+Finally, electric utility risk was determined by converting distances to utility lines into
+weighted scores, giving higher voltage infrastructure greater influence.
 
-**First**, tree mortality risk was assessed by converting the mortality raster to polygons with values normalized by the
-dataset maximum.
-
-**Second**, community features risk involved calculating minimum distances from grid centroids, which were then inverted
-and normalized with feature weights adjusting the scores.
-
-**Third**, egress route risk used distances to evacuation routes transformed into risk scores, with route weights
-refining the scoring.
-
-**Fourth**, population density statistics were extracted and normalized, with higher densities increasing priorities.
-
-**Finally**, electric utility proximity converted distances to utility lines into risk scores, with higher voltage lines
-receiving greater weight.
 
 **Code**: `Python`
 
@@ -246,24 +232,13 @@ grid["priority"] = [z["mean"] for z in zs]
 
 #### **LLM Query Generator Plugin Development**
 
-**First**, the plugin development established the basic architecture with Python files for QGIS integration, including
-the main plugin class, user interface, and metadata configuration. The plugin was registered in QGIS's plugins menu and
-toolbar.
+The plugin was developed in Python for QGIS, including the main class, user interface, and metadata setup. 
+The interface allows users to upload workflow images, view generated SQL queries, and execute them with Qt-based controls. 
+Uploaded images are processed via the Gemini-Flash LLM API, which interprets the workflow and produces PostGIS SQL queries. 
+The plugin parses the LLM output for valid SQL, allowing user review and modification. 
+Queries are executed through QGIS's database connection, with error handling for syntax or database issues. 
+Successful execution automatically generates new vector layers in QGIS with default styling.
 
-**Second**, the user interface includes an image upload component for workflow diagrams, a text display area for
-generated SQL queries, and action buttons for query generation, execution, and layer creation using Qt widgets.
-
-**Third**, the core functionality integrates the Gemini-Flash model API to process uploaded images. When users select an
-image file, the plugin converts it and sends it to the LLM with a prompt to interpret the visual workflow, identify
-spatial operations, and translate these into PostGIS SQL queries.
-
-**Fourth**, the LLM response is parsed to extract SQL query text, which is displayed for user review. Input validation
-ensures queries contain expected SQL keywords and PostGIS functions. Users can modify queries before execution.
-
-**Fifth**, query execution uses QGIS's database connection system. The plugin establishes a PostGIS connection, executes
-the query, and captures results. Error handling manages syntax errors or database issues with informative feedback.
-
-**Sixth**, upon success, the plugin creates a new vector layer in QGIS with default styling.
 
 **Code**: `Python`
 
@@ -314,17 +289,20 @@ def classFactory(iface):
 
 ## **Conclusion**
 
-These four projects show how different GIS technologies can solve real spatial analysis problems. The ice-cream shop
-analysis used PostGIS to evaluate locations against multiple criteria, turning what would be tedious manual work into an
-automated process. The school site selection brought together land-use rules, size requirements, and distance
-calculations to find parcels that met all conditions at once. For the tree-cutting priority project, I combined several
-risk factors using weighted scoring to help allocate limited resources where they're needed most. The LLM plugin was an
-experiment in making spatial analysis easier by letting users draw their workflow and have it converted to SQL using the
-Gemini-Flash API.
+These four projects demonstrate the practical use of GIS technologies to address real-world spatial analysis challenges. 
+The ice-cream shop project automated site selection using PostGIS to evaluate multiple criteria, simplifying what would otherwise be a tedious manual process. 
+The school site selection combined land-use rules, parcel size, and proximity calculations to identify suitable locations efficiently. 
+For the tree-cutting priority project, multiple risk factors were combined using weighted scoring to allocate resources where they have the greatest impact. 
+The LLM plugin provided a novel approach to streamline spatial analysis by converting visual workflows into executable SQL using the Gemini-Flash API.
 
-Working with PostgreSQL, PostGIS, Python, and QGIS throughout these projects proved to be a solid combination. PostGIS
-handled the database and spatial queries, Python dealt with the more complex calculations, and QGIS made it possible to
-create clear visualizations. Each project had its own challenges, but they all followed a similar pattern of breaking
-down the problem, applying the right spatial operations, and presenting the results in a way that supports actual
-decisions. The tools are open-source and accessible, which means these methods can be applied to similar problems in
-business planning, urban development, or environmental management without expensive proprietary software.
+Using PostgreSQL, PostGIS, Python, and QGIS together proved effective: PostGIS handled spatial queries, Python supported advanced computations, and QGIS enabled clear visualizations. 
+Although each project posed unique challenges, all followed a consistent workflow: break down the problem, apply appropriate spatial operations, and present results in a decision-supportive format. 
+These open-source tools allow these methods to be applied in business planning, urban development, or environmental management without reliance on costly proprietary software.
+
+
+## **Contributors**
+
+This project was developed and completed by:
+
+- Basil Turk  
+- Abdallah Khdaar
