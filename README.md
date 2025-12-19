@@ -1,168 +1,148 @@
-# Spatial Data Analysis
-- Jen and Barry's Site Selection
-- School Site Selection 
-- Tree Cutting Priority Analysis 
-- LLM Query Generator
+# Spatial Data Analysis Portfolio
 
-## **Introduction** 
+## Projects Included
+- Jen and Barry’s Ice-Cream Site Selection  
+- School Site Suitability Analysis  
+- Tree Cutting Priority Assessment  
+- LLM-Based SQL Query Generator  
 
-This report presents four spatial analysis projects demonstrating GIS technologies in real-world decision-making. Each
-project employs different tools: PostGIS for database management and spatial queries, GeoPandas for Python-based
-analysis, and QGIS for visualization. A plugin development project showcases AI integration with traditional GIS
-workflows.
+---
 
-The first project uses PostGIS to automate site selection for an ice cream business based on demographic and geographic
-criteria. The second identifies suitable parcels for school construction through land-use analysis. The third
-prioritizes tree removal in Fire Creek based on mortality data and risk factors. The fourth introduces a QGIS plugin
-that uses large language models to generate SQL queries from visual workflow diagrams.
+## **Overview**
 
-## **Analysis Questions**
+This portfolio presents four applied spatial analysis projects that demonstrate the use of modern GIS
+technologies for real-world decision support. Each project focuses on a different problem domain and
+utilizes appropriate tools including **PostGIS**, **GeoPandas**, **Python**, and **QGIS**.  
 
-#### **Ice-Cream Shop Site Selection**
+In addition, one project explores the integration of **Large Language Models (LLMs)** into GIS workflows
+through the development of a custom QGIS plugin.
 
-This analysis identifies optimal Pennsylvania cities for new ice cream shop locations by evaluating candidates against
-seven criteria spanning demographics, infrastructure, and quality of life. The process narrows all available cities to
-nine preliminary candidates through attribute-based filtering, then applies spatial analysis to select four final
-locations based on infrastructure proximity.
+The projects progress from traditional database-driven spatial analysis to advanced multi-criteria
+risk modeling and AI-assisted query generation.
 
-####  
+---
 
-#### **School Site Selection**
+## **Project Objectives**
 
-This analysis determines which parcels are suitable for new schools by simultaneously evaluating land-use designations,
-parcel size, building absence, and road network access. The goal is to identify viable options that meet safety
-standards, accessibility needs, and development regulations while avoiding infrastructure conflicts.
+### **Ice-Cream Shop Location Selection**
 
-####  
+The goal of this project is to identify optimal cities in Pennsylvania for expanding an ice-cream
+business. Candidate cities are evaluated using demographic, environmental, and infrastructure-based
+criteria. The workflow applies attribute filtering followed by spatial proximity analysis to arrive
+at a small set of optimal locations.
 
-#### **Tree-Cutting Priority**
+---
 
-This analysis prioritizes tree removal resources in Fire Creek by identifying high-risk areas where tree mortality
-intersects with human activity, critical infrastructure, and emergency routes. The multi-criteria assessment produces
-priority zones that guide crews toward areas with the greatest impact on public safety.
+### **School Site Selection**
 
-####  
+This project identifies parcels suitable for new school construction by analyzing land-use
+designations, parcel size, building presence, and access to roads. The objective is to locate parcels
+that meet safety, accessibility, and regulatory requirements while minimizing conflicts with existing
+infrastructure.
 
-#### **LLM Query Generator Plugin**
+---
 
-This project explores whether AI can translate visual analysis workflows into executable SQL queries. The plugin accepts
-flowcharts or diagrams and automatically generates PostGIS code, testing whether large language models can interpret
-spatial reasoning and produce functional queries for QGIS map layers.
+### **Tree Cutting Priority Analysis**
 
-## **Criteria**
+This analysis determines priority zones for tree removal in the town of Fire Creek. By combining tree
+mortality data with human activity, infrastructure, and emergency access layers, the project produces
+a weighted priority surface that helps allocate limited tree removal resources efficiently.
 
-#### **Ice-Cream Site Selection**
+---
 
-* Greater than or equal to 500 farms for milk production
+### **LLM Query Generator Plugin**
 
-* Labor pool of at least 25,000 individuals between ages 18 and 64
+This project investigates whether large language models can interpret visual spatial workflows and
+translate them into executable PostGIS SQL queries. A QGIS plugin was developed to accept diagram inputs
+and generate database queries automatically.
 
-* Crime index less than or equal to 0.02
+---
+## **Evaluation Criteria**
 
-* Population density below 150 persons per square mile
+### **Ice-Cream Site Selection**
+- At least 500 farms producing milk  
+- Labor force (ages 18–64) ≥ 25,000  
+- Crime index ≤ 0.02  
+- Population density < 150 people per square mile  
+- Presence of a university or college  
+- Recreation area within 10 miles  
+- Interstate highway within 20 miles  
+- Final selection limited to four cities  
 
-* Located near a university or college
+---
 
-* At least one recreation area within 10 miles
+### **School Site Selection**
+- Acceptable land-use types: unused, agricultural, or commercial  
+- Parcel area ≥ 5,000 m²  
+- No existing buildings  
+- Located within 25 meters of a road  
 
-* Interstate highway within 20 miles
+---
 
-* Final target narrows to 4 optimal city locations
+### **Tree-Cutting Priority**
+- Tree mortality intensity  
+- Distance to community features  
+- Proximity to evacuation routes  
+- Population density  
+- Distance to electric utilities  
+- Combined weighted priority value per grid cell  
 
-####  
+---
+## **Data Sources**
 
-#### **School Site Selection**
+### **Ice-Cream Site Selection**
 
-* Land-use type must be unused, agricultural lands, or commercial lands
+| Dataset | Description | Model | Type | Attributes |
+|------|------------|-------|------|------------|
+| cities | City locations | Vector | Point | Geom, Name, Population, Crime, University |
+| counties | County boundaries | Vector | Polygon | Demographics, farms, density |
+| interstates | Highway network | Vector | Line | Geom, Name |
+| recareas | Recreation areas | Vector | Polygon | Area, Perimeter |
 
-* Parcel area equal to or greater than 5,000 square meters
+---
 
-* No buildings present on the land-use parcels
+### **School Site Selection**
 
-* Location within 25 meters distance from the nearest road
+| Dataset | Description | Model | Type | Attributes |
+|------|------------|-------|------|------------|
+| buildings | Existing structures | Vector | Polygon | Owner, Type |
+| landuse | Parcels | Vector | Polygon | Owner, Type, Area |
+| roads | Road network | Vector | Line | Type, Length |
 
-####  
+---
 
-#### **Tree-Cutting Priority**
+### **Tree-Cutting Priority**
 
-* Tree mortality levels
+| Dataset | Description | Model | Type | Attributes |
+|------|------------|-------|------|------------|
+| Tree mortality | Mortality intensity | Raster | Continuous | Total mortality |
+| Community features | Public features | Vector | Point | Name, Weight |
+| Egress routes | Evacuation routes | Vector | Line | Weight |
+| Populated areas | Population density | Raster | Continuous | Pop per sq mile |
+| Electric utilities | Power infrastructure | Vector | Line | Voltage, Type |
 
-* Proximity to community features
+---
 
-* Distance from egress routes
+### **LLM Query Generator**
 
-* Population density in surrounding areas
+| Dataset | Description | Type |
+|------|------------|------|
+| Input diagrams | Workflow images | Image |
+| Generated queries | SQL text | Text |
+| Output layers | Query results | Vector / Raster |
 
-* Distance to electric utilities
-
-* Combined weighted priority score assigned to each grid cell
-
-
-
-## **Data**
-
-#### **Ice-Cream Site Selection**
-
-|   Dataset   |    Description     | Data Model |   Type   |                                       Attributes                                       |
-|:-----------:|:------------------:|:----------:|:--------:|:--------------------------------------------------------------------------------------:|
-|   cities    |  Point locations   |   Vector   | Discrete |      Geom, Name, Population, total\_crim numeric, crime\_inde numeric, university      |
-|  counties   | Polygon boundaries |   Vector   | Discrete | Geom, area, perimeter, name, pop1990, age\_18\_64, no\_farms87, pop\_sqmile, sq\_miles |
-| interstates |   Line networks    |   Vector   | Discrete |                                       Geom, name                                       |
-|  recareas   | Polygon boundaries |   Vector   | Discrete |                                 Geom, area, perimeter                                  |
-
-#### **School Site Selection**
-
-|  Dataset  |    Description     | Data Model |   Type   |             Attributes              |
-|:---------:|:------------------:|:----------:|:--------:|:-----------------------------------:|
-| buildings | Polygon structures |   Vector   | Discrete |       Geom, area, owner, type       |
-|  landuse  |  Polygon parcels   |   Vector   | Discrete |    Geom, owner, type, sale, area    |
-|   roads   |  Polygon networks  |   Vector   | Discrete | Geom, type, no\_paths, name, length |
-|  sewage   |  Point locations   |   Vector   | Discrete |        Geom, type, polluted         |
-|  cistern  |  Point locations   |   Vector   | Discrete |        Geom, type, polluted         |
-
-####  
-
-#### **Tree-Cutting Priority**
-
-|      Dataset       |   Description   | Data Model |    Type    |                                 Attributes                                 |
-|:------------------:|:---------------:|:----------:|:----------:|:--------------------------------------------------------------------------:|
-|   Tree mortality   |   Grid cells    |   Raster   | Continuous |                Geom, shape\_leng, shape\_area, tot\_mortal                 |
-| community features | Point locations |   Vector   |  Discrete  |                             Geom, name, weight                             |
-|   egress routes    |  Line networks  |   Vector   |  Discrete  |                         Geom, weight, shape\_leng                          |
-|  populated areas   |   Grid cells    |   Raster   | Continuous | Geom, place\_name, pop, pop\_per\_sq, area\_sqmi, shape\_leng, shape\_area |
-| electric utilities |  Line networks  |   Vector   |  Discrete  |                            Geom, voltage, type                             |
-
-####  
-
-#### **LLM Query Generator**
-
-|      Dataset      |    Description    |  Data Model   |    Type     |             Attributes             |
-|:-----------------:|:-----------------:|:-------------:|:-----------:|:----------------------------------:|
-|   Input images    | Workflow diagrams |     Image     | Non-spatial |  Format, resolution, content type  |
-| Generated queries |     SQL text      |     Text      | Non-spatial |  Query string, syntax validation   |
-|   Output layers   | Variable geometry | Vector/Raster |  Variable   | Depends on query execution results |
-
-  
+---
 
 ## **Methodology**
 
-#### **Ice-Cream Shop Site Selection (PostGIS \+ QGIS)**
+### **Ice-Cream Shop Site Selection (PostGIS & QGIS)**
 
-The analysis imported all shapefiles into a PostGIS database with NAD27 coordinates (SRID 4267), which required
-transformation for distance calculations.
+All datasets were imported into PostGIS using NAD27 coordinates (SRID 4267). Distance-based operations
+required reprojection into Pennsylvania State Plane North.
 
-**First**, a view identified suitable counties by filtering for farm counts exceeding 500, populations aged 18-64 of at
-least 25,000, and population density below 150 persons per square mile. This significantly reduced the search area.
-
-**Second**, a view selected cities within suitable counties that met crime index thresholds and had university presence,
-narrowing candidates to nine cities meeting all county and city-level criteria.
-
-**Third**, evaluate interstate proximity through spatial distance calculations. Both cities and interstates layers were
-reprojected into Pennsylvania State Plane North (feet units). The ST\_DWithin function identified cities within 20
-miles (105,600 feet) of any interstate highway.
-
-**Finally**, using the same coordinate system, another ST\_DWithin query identified cities within 10 miles (52,800 feet)
-of recreation areas, producing four cities satisfying all seven criteria.
+The workflow first filtered counties using demographic and agricultural criteria. Cities within those
+counties were then filtered by crime index and university presence. Distance-based spatial joins were
+used to evaluate proximity to highways and recreation areas.
 
 **Code**: `SQL`
 
